@@ -21,6 +21,7 @@ class GenreRepository
     public function getOneById($id)
     {
         $statement = DB::get()->prepare("SELECT * FROM `genres` WHERE `id` = :id;");
+        $statement->execute([':id' => $id]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         if (!empty($result)) {
             return $result;
@@ -29,29 +30,22 @@ class GenreRepository
         }
     }
 
-    public function deleteById($id)
-    {
-        $statement = DB::get()->prepare("DELETE FROM `genres` WHERE id = :id");
-        $result = $statement->execute([':id' => $id]);
-        if ($result) {
-            return $result;
-        }
-        throw new Exception("konnte Genre nicht löschen!");
-    }
-
     public function create($title)
     {
         $statement = DB::get()->prepare(
             "INSERT INTO genres ( title )
             VALUES ( :title );");
         $statement->execute([':title' => $title]);
+        return DB::get()->lastInsertId();
+    }
+
+    public function deleteById($id)
+    {
+        // TBD
     }
 
     public function update($id, $title)
     {
-        // prepare mit named Parameter ':id' => $id
-        $statement = DB::get()->prepare(
-            "UPDATE `genres` SET title= :title WHERE id = :id");
-        $statement->execute([':id' => $id, ':title' => $title]);
+        // TBD
     }
 }
