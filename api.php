@@ -7,7 +7,8 @@ function getPath() {
   // __DIR__ - $_SERVER['DOCUMENT_ROOT'] => php_vertiefung/rest (baseURL)
   // $_SERVER['REQUEST_URI'] => /php_vertiefung/rest/genres/1
   // $_SERVER['REQUEST_URI'] - $baseURL => Path (genres/1)
-  $baseUrl = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__);
+  $dir = str_replace('\\', '/', __DIR__);
+  $baseUrl = str_replace($_SERVER['DOCUMENT_ROOT'], '', $dir);
   $path = str_replace($baseUrl, '', $_SERVER['REQUEST_URI']);
   return $path;
 }
