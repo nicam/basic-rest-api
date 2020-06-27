@@ -10,6 +10,7 @@ function getPath() {
   $dir = str_replace('\\', '/', __DIR__);
   $baseUrl = str_replace($_SERVER['DOCUMENT_ROOT'], '', $dir);
   $path = str_replace($baseUrl, '', $_SERVER['REQUEST_URI']);
+  $path = str_replace('?' . $_SERVER['QUERY_STRING'], '', $path);
   return $path;
 }
 
