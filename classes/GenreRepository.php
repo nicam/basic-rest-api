@@ -13,14 +13,18 @@ class GenreRepository
 
     public function getAll()
     {
-        $statement = DB::get()->prepare("SELECT * FROM `genres` LIMIT 100");
+        $statement = DB::get()->prepare(
+            "SELECT * FROM `genres` LIMIT 100"
+        );
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getOneById($id)
     {
-        $statement = DB::get()->prepare("SELECT * FROM `genres` WHERE `id` = :id;");
+        $statement = DB::get()->prepare(
+            "SELECT * FROM `genres` WHERE `id` = :id;"
+        );
         $statement->execute([':id' => $id]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         if (!empty($result)) {
@@ -33,19 +37,31 @@ class GenreRepository
     public function create($title)
     {
         $statement = DB::get()->prepare(
-            "INSERT INTO genres ( title )
-            VALUES ( :title );");
+            "INSERT INTO genres ( title ) VALUES ( :title );"
+        );
         $statement->execute([':title' => $title]);
         return DB::get()->lastInsertId();
     }
 
     public function deleteById($id)
     {
-        // TBD
+        $statement = DB::get()->prepare(
+            "DELETE FROM genres WHERE id = :id;"
+        );
+        $statement->execute([':id' => $id]);
+
+        // Prüfen ob wirklich was gelöscht wurde
+        if ($statement->rowCount() > 0) {
+            return true;
+        }
+        return false;
     }
 
     public function update($id, $title)
     {
-        // TBD
+        $statement = DB::get()->prepare(
+            "UPDATE genres set title = :title;"
+        );
+        $statement->execute([':title' => $title]);
     }
 }

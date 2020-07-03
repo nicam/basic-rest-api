@@ -7,7 +7,7 @@ class GenreController extends BaseController
      */
     public static function get()
     {
-        return new GenreController();
+      return new GenreController();
     }
 
     public function getAll()
@@ -43,12 +43,28 @@ class GenreController extends BaseController
 
     public function update($id, $data)
     {
-      // Zu implementieren
+      if (empty($data['title'])) {
+        return $this->json([
+          'error' => 'Title Missing',
+        ], 400);
+      }
+      $repository = GenreRepository::get();
+      $repository->update($id, $data['title']);
+      return $this->getOne($id);
     }
 
     public function delete($id)
     {
-      // Zu implementieren
+      $repository = GenreRepository::get();
+      $wasDeleted = $repository->deleteById($id);
+      if ($wasDeleted) {
+        return $this->json([
+          'status' => 'success',
+        ], 200);
+      }
+      return $this->json([
+        'status' => 'not found',
+      ], 404);
     }
 
 }
