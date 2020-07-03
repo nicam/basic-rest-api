@@ -2,6 +2,7 @@
 
 class GenreController extends BaseController
 {
+
     /**
      * @return GenreController new GenreController instance
      */
@@ -10,10 +11,22 @@ class GenreController extends BaseController
       return new GenreController();
     }
 
-    public function getAll()
+    public function getAll($query)
     {
+      $limit = (!empty($query['limit']) && is_numeric($query['limit']) && $query['limit'] > 0) ? $query['limit'] : 100;
+
+      $column = 'title';
+      $direction = 'ASC';
+      if (!empty($query['orderBy'])) {
+        $columnRequested = $query['orderBy'];
+        if (substr($query['orderBy'], 0, 1) === "-") { // Prüfen ob mit - anfängt
+          $direction = 'DESC';
+          $columnRequested = substr($columnRequested, 1); // - entfernen
+        }
+      }
+
       $repository = GenreRepository::get();
-      $genres = $repository->getAll();
+      $genres = $repository->getAll($limit, $column, $direction);
       return $this->json($genres);
     }
 

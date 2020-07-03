@@ -3,6 +3,9 @@
 
 class GenreRepository
 {
+
+    private $allowedOrderColumns = ['title', 'created_at', 'updated_at'];
+
     /**
      * @return GenreRepository new DbUserLoader instance
      */
@@ -11,11 +14,17 @@ class GenreRepository
         return new GenreRepository();
     }
 
-    public function getAll()
+    public function getAll($limit = 100, $orderColumn = 'id', $orderDirection = 'ASC')
     {
+        $orderColumn = in_array($orderColumn, $this->allowedOrderColumns) ? $orderColumn : 'id';
+        if ($orderDirection !== 'DESC' && $orderDirection !== 'ASC') {
+            $orderDirection = 'ASC';
+        }
+        // It's not possible to use OrderBy as parameter in prepared statements
         $statement = DB::get()->prepare(
-            "SELECT * FROM `genres` LIMIT 100"
+            "SELECT * FROM `genres` ORDER BY $orderColumn $orderDirection LIMIT :limit"
         );
+        $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -60,8 +69,8 @@ class GenreRepository
     public function update($id, $title)
     {
         $statement = DB::get()->prepare(
-            "UPDATE genres set title = :title;"
+            "UPDATE genres set title = :title WHERE id = :id"
         );
-        $statement->execute([':title' => $title]);
+        $statement->execute([':title' => $title, ':id' => $id]);
     }
 }

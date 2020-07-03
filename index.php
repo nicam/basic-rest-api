@@ -6,6 +6,7 @@ require "api.php";
 $method = getMethod();
 $resource = getResource();
 $identifier = getIdentifier();
+$query = getQuery();
 
 switch ($resource) {
   case 'genres':
@@ -15,7 +16,7 @@ switch ($resource) {
         if ($identifier) {
           return $controller->getOne($identifier);
         }
-        return $controller->getAll();
+        return $controller->getAll($query);
       case 'POST':
         $postBody = getPostBody();
         return $controller->create($postBody);
